@@ -1,10 +1,14 @@
-package fr.esgi.al.funprog
+package progfun
 
 object Main extends App {
-  println("Ici le programme principal")
-  // Le code suivant ne compilera pas.
-  // var tmp = null;
-  // var tmp2 = if (tmp == 1) "yes" else 1
+  val lawn = Lawn(5, 5)
 
-  // println(s"tmp: $tmp, tmp2: $tmp2")
+  val position = Position(0, 0, Orientation.N)
+
+  val instructions = "GAGAGAGAA"
+
+  val finalPosition =
+    LawnMower.processInstructions(position, instructions, lawn)
+
+  println("Final position: " + finalPosition.toString)
 }
