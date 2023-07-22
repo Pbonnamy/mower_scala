@@ -1,14 +1,22 @@
 package progfun
 
+import com.typesafe.config.{Config, ConfigFactory}
+
 object Main extends App {
-  val lawn = Lawn(5, 5)
+  val conf: Config = ConfigFactory.load()
 
-  val position = Position(0, 0, Orientation.N)
+  val lines = Parser.readFile(conf.getString("application.input-file"))
 
-  val instructions = "GAGAGAGAA"
+  val lawn = Parser.parseLawn(lines.headOption.getOrElse("0 0"))
 
-  val finalPosition =
-    LawnMower.processInstructions(position, instructions, lawn)
-
-  println("Final position: " + finalPosition.toString)
+  lines.drop(1).grouped(2).foreach {
+    case List(position, instructions) =>
+      val finalPosition = LawnMower.processInstructions(
+        Parser.parsePosition(position),
+        instructions,
+        lawn
+      )
+      println("Position finale: " + finalPosition.toString)
+    case _ => println("Erreur de parsing")
+  }
 }

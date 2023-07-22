@@ -2,23 +2,25 @@ package progfun
 
 object LawnMower {
 
-  def turnLeft(position: Position): Position = position.orientation match {
-    case Orientation.N => position.copy(orientation = Orientation.W)
-    case Orientation.E => position.copy(orientation = Orientation.N)
-    case Orientation.S => position.copy(orientation = Orientation.E)
-    case Orientation.W => position.copy(orientation = Orientation.S)
-    case _             => position
-  }
+  private def turnLeft(position: Position): Position =
+    position.orientation match {
+      case Orientation.N => position.copy(orientation = Orientation.W)
+      case Orientation.E => position.copy(orientation = Orientation.N)
+      case Orientation.S => position.copy(orientation = Orientation.E)
+      case Orientation.W => position.copy(orientation = Orientation.S)
+      case _             => position
+    }
 
-  def turnRight(position: Position): Position = position.orientation match {
-    case Orientation.N => position.copy(orientation = Orientation.E)
-    case Orientation.E => position.copy(orientation = Orientation.S)
-    case Orientation.S => position.copy(orientation = Orientation.W)
-    case Orientation.W => position.copy(orientation = Orientation.N)
-    case _             => position
-  }
+  private def turnRight(position: Position): Position =
+    position.orientation match {
+      case Orientation.N => position.copy(orientation = Orientation.E)
+      case Orientation.E => position.copy(orientation = Orientation.S)
+      case Orientation.S => position.copy(orientation = Orientation.W)
+      case Orientation.W => position.copy(orientation = Orientation.N)
+      case _             => position
+    }
 
-  def moveForward(position: Position, lawn: Lawn): Position =
+  private def moveForward(position: Position, lawn: Lawn): Position =
     position.orientation match {
       case Orientation.N =>
         if (position.y + 1 > lawn.height) position
