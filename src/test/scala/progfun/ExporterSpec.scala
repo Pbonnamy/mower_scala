@@ -10,9 +10,7 @@ class ExporterSpec extends AnyFlatSpec {
       Some(Mower(Position(1, 2, Orientation.N), "GAGAGAGAA", Position(1, 3, Orientation.N))),
       Some(Mower(Position(3, 3, Orientation.E), "AADAADADDA", Position(5, 1, Orientation.E)))
     )
-    val outputFile = "src/test/resources/output.csv"
-    Exporter.exportToCsv(mowers, outputFile)
-    val lines = Parser.readFile(outputFile)
+    val lines = Exporter.exportToCsv(mowers)
     lines should be(
       List(
         "1 2 N",
@@ -30,9 +28,7 @@ class ExporterSpec extends AnyFlatSpec {
       Some(Mower(Position(1, 2, Orientation.N), "GAGAGAGAA", Position(1, 3, Orientation.N))),
       Some(Mower(Position(3, 3, Orientation.E), "AADAADADDA", Position(5, 1, Orientation.E)))
     )
-    val outputFile = "src/test/resources/output.json"
-    Exporter.exportToJson(mowers, Lawn(5,5), outputFile)
-    val lines = Parser.readFile(outputFile)
+    val lines = Exporter.exportToJson(mowers, Lawn(5,5))
     lines should be(
       List(
         "1 2 N",
