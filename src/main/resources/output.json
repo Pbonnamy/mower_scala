@@ -1,15 +1,15 @@
 {
   "limite" : {
-    "width" : 5,
-    "height" : 5
+    "x" : 5,
+    "y" : 5
   },
   "tondeuses" : [ {
-    "début" : {
+    "debut" : {
       "point" : {
         "x" : 1,
         "y" : 2
       },
-      "orientation" : "N"
+      "direction" : "N"
     },
     "instructions" : [ "G", "A", "G", "A", "G", "A", "G", "A", "A" ],
     "fin" : {
@@ -17,15 +17,15 @@
         "x" : 1,
         "y" : 3
       },
-      "orientation" : "N"
+      "direction" : "N"
     }
   }, {
-    "début" : {
+    "debut" : {
       "point" : {
         "x" : 3,
         "y" : 3
       },
-      "orientation" : "E"
+      "direction" : "E"
     },
     "instructions" : [ "A", "A", "D", "A", "A", "D", "A", "D", "D", "A" ],
     "fin" : {
@@ -33,7 +33,7 @@
         "x" : 5,
         "y" : 1
       },
-      "orientation" : "E"
+      "direction" : "E"
     }
   } ]
 }

@@ -1,10 +1,11 @@
 package progfun
 
-import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
+import play.api.libs.json.{JsNumber, JsValue, Json}
+import scala.util.Try
 
 object Exporter {
 
-  def exportToCsv(mowers: List[Option[Mower]], filename: String): Unit = {
+  def exportToCsv(mowers: List[Option[Mower]]): String = {
     val header =
       "numéro;début_x;début_y;début_direction;fin_x;fin_y;fin_direction;instructions"
     val lines = mowers.zipWithIndex.map {
@@ -19,66 +20,60 @@ object Exporter {
           mower.instructions
       case _ => ""
     }
-    val csv = (header :: lines).mkString("\n")
 
-    val writer = new java.io.PrintWriter(filename)
-    writer.write(csv)
-    writer.close()
+    val csv = (header :: lines).filterNot(_.isEmpty).mkString("\n")
+
+    csv
   }
 
-  def exportToJson(
-      mowers: List[Option[Mower]],
-      lawn: Lawn,
-      filename: String): Unit = {
+  def exportToJson(mowers: List[Option[Mower]], lawn: Lawn): String = {
     val json: JsValue = Json.obj(
       "limite" -> Json.obj(
-        "width"  -> JsNumber(lawn.width),
-        "height" -> JsNumber(lawn.height)
+        "x" -> JsNumber(lawn.width),
+        "y" -> JsNumber(lawn.height)
       ),
-      "tondeuses" -> mowers.zipWithIndex.map {
-        case (Some(mower), _) =>
-          Json.obj(
-            "début" -> Json.obj(
-              "point" -> Json.obj(
-                "x" -> JsNumber(mower.initialPosition.x),
-                "y" -> JsNumber(mower.initialPosition.y)
+      // dont write mowers if they are empty
+      "tondeuses" -> mowers.zipWithIndex
+        .filter(_._1.isDefined)
+        .map {
+          case (Some(mower), _) =>
+            Json.obj(
+              "debut" -> Json.obj(
+                "point" -> Json.obj(
+                  "x" -> JsNumber(mower.initialPosition.x),
+                  "y" -> JsNumber(mower.initialPosition.y)
+                ),
+                "direction" -> mower.initialPosition.orientation.toString
               ),
-              "orientation" -> mower.initialPosition.orientation.toString
-            ),
-            "instructions" -> mower.instructions.split("").toList,
-            "fin" -> Json.obj(
-              "point" -> Json.obj(
-                "x" -> JsNumber(mower.finalPosition.x),
-                "y" -> JsNumber(mower.finalPosition.y)
-              ),
-              "orientation" -> mower.finalPosition.orientation.toString
+              "instructions" -> mower.instructions.split("").toList,
+              "fin" -> Json.obj(
+                "point" -> Json.obj(
+                  "x" -> JsNumber(mower.finalPosition.x),
+                  "y" -> JsNumber(mower.finalPosition.y)
+                ),
+                "direction" -> mower.finalPosition.orientation.toString
+              )
             )
-          )
-        case _ => JsObject.empty
-      }
+          case _ => Json.obj()
+        }
     )
 
-    val writer = new java.io.PrintWriter(filename)
-    writer.write(Json.prettyPrint(json))
-    writer.close()
+    Json.prettyPrint(json)
   }
 
-  def exportToYaml(
-      mowers: List[Option[Mower]],
-      lawn: Lawn,
-      filename: String): Unit = {
+  def exportToYaml(mowers: List[Option[Mower]], lawn: Lawn): String = {
     val yaml = {
       "limite:\n" +
-        "  width: " + lawn.width.toString + "\n" +
-        "  height: " + lawn.height.toString + "\n" +
+        "  x: " + lawn.width.toString + "\n" +
+        "  y: " + lawn.height.toString + "\n" +
         "tondeuses:\n" +
         mowers.zipWithIndex.map {
           case (Some(mower), _) =>
-            "- début:\n" +
+            "- debut:\n" +
               "    point:\n" +
               "      x: " + mower.initialPosition.x.toString + "\n" +
               "      y: " + mower.initialPosition.y.toString + "\n" +
-              "    orientation: " + mower.initialPosition.orientation.toString + "\n" +
+              "    direction: " + mower.initialPosition.orientation.toString + "\n" +
               "  instructions: \n  - " + mower.instructions.mkString(
                 "\n  - "
               ) + "\n" +
@@ -86,13 +81,19 @@ object Exporter {
               "    point:\n" +
               "      x: " + mower.finalPosition.x.toString + "\n" +
               "      y: " + mower.finalPosition.y.toString + "\n" +
-              "    orientation: " + mower.finalPosition.orientation.toString + "\n"
+              "    direction: " + mower.finalPosition.orientation.toString + "\n"
           case _ => ""
         }.mkString
     }
 
-    val writer = new java.io.PrintWriter(filename)
-    writer.write(yaml)
-    writer.close()
+    yaml
+  }
+
+  def writeToFile(content: String, filename: String): Try[Unit] = {
+    Try {
+      val writer = new java.io.PrintWriter(filename)
+      writer.write(content)
+      writer.close()
+    }
   }
 }
