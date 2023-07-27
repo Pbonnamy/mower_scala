@@ -25,16 +25,13 @@ object Main extends App {
     }
     .toList
 
-
   Exporter.exportToCsv(mowers, conf.getString("application.output-csv-file"))
-
 
   Exporter.exportToJson(
     mowers,
     lawn,
     conf.getString("application.output-json-file")
   )
-
 
   Exporter.exportToYaml(
     mowers,

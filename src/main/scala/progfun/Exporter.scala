@@ -27,9 +27,9 @@ object Exporter {
   }
 
   def exportToJson(
-                    mowers: List[Option[Mower]],
-                    lawn: Lawn,
-                    filename: String): Unit = {
+      mowers: List[Option[Mower]],
+      lawn: Lawn,
+      filename: String): Unit = {
     val json: JsValue = Json.obj(
       "limite" -> Json.obj(
         "width"  -> JsNumber(lawn.width),
@@ -64,9 +64,9 @@ object Exporter {
   }
 
   def exportToYaml(
-                    mowers: List[Option[Mower]],
-                    lawn: Lawn,
-                    filename: String): Unit = {
+      mowers: List[Option[Mower]],
+      lawn: Lawn,
+      filename: String): Unit = {
     val yaml = {
       "limite:\n" +
         "  width: " + lawn.width.toString + "\n" +
@@ -80,8 +80,8 @@ object Exporter {
               "      y: " + mower.initialPosition.y.toString + "\n" +
               "    orientation: " + mower.initialPosition.orientation.toString + "\n" +
               "  instructions: \n  - " + mower.instructions.mkString(
-              "\n  - "
-            ) + "\n" +
+                "\n  - "
+              ) + "\n" +
               "  fin:\n" +
               "    point:\n" +
               "      x: " + mower.finalPosition.x.toString + "\n" +
