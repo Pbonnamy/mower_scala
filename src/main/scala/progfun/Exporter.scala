@@ -1,6 +1,6 @@
 package progfun
 
-import play.api.libs.json.{JsNumber, JsObject, JsValue, Json}
+import play.api.libs.json.{JsNumber, JsValue, Json}
 
 object Exporter {
 
@@ -19,11 +19,10 @@ object Exporter {
           mower.instructions
       case _ => ""
     }
-    val csv = (header :: lines).mkString("\n")
 
-    val writer = new java.io.PrintWriter(filename)
-    writer.write(csv)
-    writer.close()
+    val csv = (header :: lines).filterNot(_.isEmpty).mkString("\n")
+
+    writeToFile(csv, filename)
   }
 
   def exportToJson(
@@ -32,35 +31,36 @@ object Exporter {
       filename: String): Unit = {
     val json: JsValue = Json.obj(
       "limite" -> Json.obj(
-        "width"  -> JsNumber(lawn.width),
-        "height" -> JsNumber(lawn.height)
+        "x" -> JsNumber(lawn.width),
+        "y" -> JsNumber(lawn.height)
       ),
-      "tondeuses" -> mowers.zipWithIndex.map {
-        case (Some(mower), _) =>
-          Json.obj(
-            "début" -> Json.obj(
-              "point" -> Json.obj(
-                "x" -> JsNumber(mower.initialPosition.x),
-                "y" -> JsNumber(mower.initialPosition.y)
+      // dont write mowers if they are empty
+      "tondeuses" -> mowers.zipWithIndex
+        .filter(_._1.isDefined)
+        .map {
+          case (Some(mower), _) =>
+            Json.obj(
+              "debut" -> Json.obj(
+                "point" -> Json.obj(
+                  "x" -> JsNumber(mower.initialPosition.x),
+                  "y" -> JsNumber(mower.initialPosition.y)
+                ),
+                "direction" -> mower.initialPosition.orientation.toString
               ),
-              "orientation" -> mower.initialPosition.orientation.toString
-            ),
-            "instructions" -> mower.instructions.split("").toList,
-            "fin" -> Json.obj(
-              "point" -> Json.obj(
-                "x" -> JsNumber(mower.finalPosition.x),
-                "y" -> JsNumber(mower.finalPosition.y)
-              ),
-              "orientation" -> mower.finalPosition.orientation.toString
+              "instructions" -> mower.instructions.split("").toList,
+              "fin" -> Json.obj(
+                "point" -> Json.obj(
+                  "x" -> JsNumber(mower.finalPosition.x),
+                  "y" -> JsNumber(mower.finalPosition.y)
+                ),
+                "direction" -> mower.finalPosition.orientation.toString
+              )
             )
-          )
-        case _ => JsObject.empty
-      }
+          case _ => Json.obj()
+        }
     )
 
-    val writer = new java.io.PrintWriter(filename)
-    writer.write(Json.prettyPrint(json))
-    writer.close()
+    writeToFile(Json.prettyPrint(json), filename)
   }
 
   def exportToYaml(
@@ -69,16 +69,16 @@ object Exporter {
       filename: String): Unit = {
     val yaml = {
       "limite:\n" +
-        "  width: " + lawn.width.toString + "\n" +
-        "  height: " + lawn.height.toString + "\n" +
+        "  x: " + lawn.width.toString + "\n" +
+        "  y: " + lawn.height.toString + "\n" +
         "tondeuses:\n" +
         mowers.zipWithIndex.map {
           case (Some(mower), _) =>
-            "- début:\n" +
+            "- debut:\n" +
               "    point:\n" +
               "      x: " + mower.initialPosition.x.toString + "\n" +
               "      y: " + mower.initialPosition.y.toString + "\n" +
-              "    orientation: " + mower.initialPosition.orientation.toString + "\n" +
+              "    direction: " + mower.initialPosition.orientation.toString + "\n" +
               "  instructions: \n  - " + mower.instructions.mkString(
                 "\n  - "
               ) + "\n" +
@@ -86,13 +86,17 @@ object Exporter {
               "    point:\n" +
               "      x: " + mower.finalPosition.x.toString + "\n" +
               "      y: " + mower.finalPosition.y.toString + "\n" +
-              "    orientation: " + mower.finalPosition.orientation.toString + "\n"
+              "    direction: " + mower.finalPosition.orientation.toString + "\n"
           case _ => ""
         }.mkString
     }
 
+    writeToFile(yaml, filename)
+  }
+
+  private def writeToFile(content: String, filename: String): Unit = {
     val writer = new java.io.PrintWriter(filename)
-    writer.write(yaml)
+    writer.write(content)
     writer.close()
   }
 }

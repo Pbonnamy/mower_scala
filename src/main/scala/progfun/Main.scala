@@ -5,21 +5,30 @@ import com.typesafe.config.{Config, ConfigFactory}
 object Main extends App {
   val conf: Config = ConfigFactory.load()
 
-  val lines = Parser.readFile(conf.getString("application.input-file"))
+  val lines = Parser.readFile(conf.getString("application.input-file")) match {
+    case scala.util.Success(lines) => lines
+    case scala.util.Failure(_) =>
+      println("Error: could not read input file")
+      sys.exit(1)
+  }
 
-  val lawn = Parser.parseLawn(lines.headOption.getOrElse("0 0"))
+  val lawn = Parser.parseLawn(lines.headOption.getOrElse("0 0")).getOrElse {
+    println("Error: could not parse lawn")
+    sys.exit(1)
+  }
 
   val mowers = lines
     .drop(1)
     .grouped(2)
     .map {
       case List(position, instructions) =>
-        val finalPosition = LawnMower.processInstructions(
-          Parser.parsePosition(position),
-          instructions,
-          lawn
-        )
-        Some(Mower(Parser.parsePosition(position), instructions, finalPosition))
+        Parser.parsePosition(position).map { position =>
+          Mower(
+            position,
+            instructions,
+            LawnMower.processInstructions(position, instructions, lawn)
+          )
+        }
       case _ =>
         None
     }
