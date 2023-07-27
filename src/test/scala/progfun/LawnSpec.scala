@@ -1,4 +1,4 @@
-package Mower
+package progfun
 
 import org.scalatest.flatspec.AnyFlatSpec
 import progfun.{Lawn, Orientation, Parser, Position}
@@ -27,10 +27,9 @@ class LawnSpec extends AnyFlatSpec {
     assert(expectedPosition == parsedPosition)
   }
 
-  /*it should "parse a position" in {
-    val expectedPosition = Position(4, 5, Orientation.N)
-    val parsedPosition = Parser.parsePosition("A 5DN")
-    assert(expectedPosition == parsedPosition)
-  }*/
+  it should "read a file" in {
+    val lines = Parser.readFile("src/test/resources/test.txt")
+    assert(lines == List("azertyuiuop", "azertyuiopqsdfghjklmwxcvbn"))
+  }
 
 }
