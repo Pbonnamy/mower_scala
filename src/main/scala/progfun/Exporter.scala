@@ -1,10 +1,11 @@
 package progfun
 
 import play.api.libs.json.{JsNumber, JsValue, Json}
+import scala.util.Try
 
 object Exporter {
 
-  def exportToCsv(mowers: List[Option[Mower]], filename: String): Unit = {
+  def exportToCsv(mowers: List[Option[Mower]]): String = {
     val header =
       "numéro;début_x;début_y;début_direction;fin_x;fin_y;fin_direction;instructions"
     val lines = mowers.zipWithIndex.map {
@@ -22,13 +23,10 @@ object Exporter {
 
     val csv = (header :: lines).filterNot(_.isEmpty).mkString("\n")
 
-    writeToFile(csv, filename)
+    csv
   }
 
-  def exportToJson(
-      mowers: List[Option[Mower]],
-      lawn: Lawn,
-      filename: String): Unit = {
+  def exportToJson(mowers: List[Option[Mower]], lawn: Lawn): String = {
     val json: JsValue = Json.obj(
       "limite" -> Json.obj(
         "x" -> JsNumber(lawn.width),
@@ -60,13 +58,10 @@ object Exporter {
         }
     )
 
-    writeToFile(Json.prettyPrint(json), filename)
+    Json.prettyPrint(json)
   }
 
-  def exportToYaml(
-      mowers: List[Option[Mower]],
-      lawn: Lawn,
-      filename: String): Unit = {
+  def exportToYaml(mowers: List[Option[Mower]], lawn: Lawn): String = {
     val yaml = {
       "limite:\n" +
         "  x: " + lawn.width.toString + "\n" +
@@ -91,12 +86,14 @@ object Exporter {
         }.mkString
     }
 
-    writeToFile(yaml, filename)
+    yaml
   }
 
-  private def writeToFile(content: String, filename: String): Unit = {
-    val writer = new java.io.PrintWriter(filename)
-    writer.write(content)
-    writer.close()
+  def writeToFile(content: String, filename: String): Try[Unit] = {
+    Try {
+      val writer = new java.io.PrintWriter(filename)
+      writer.write(content)
+      writer.close()
+    }
   }
 }

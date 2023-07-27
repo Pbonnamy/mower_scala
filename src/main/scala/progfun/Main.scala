@@ -1,6 +1,7 @@
 package progfun
 
 import com.typesafe.config.{Config, ConfigFactory}
+import scala.util.{Failure, Success}
 
 object Main extends App {
   val conf: Config = ConfigFactory.load()
@@ -34,17 +35,33 @@ object Main extends App {
     }
     .toList
 
-  Exporter.exportToCsv(mowers, conf.getString("application.output-csv-file"))
+  val csv = Exporter.exportToCsv(mowers)
 
-  Exporter.exportToJson(
-    mowers,
-    lawn,
+  Exporter.writeToFile(
+    csv,
+    conf.getString("application.output-csv-file")
+  ) match {
+    case Success(_) => println("CSV file written")
+    case Failure(_) => println("Error: could not write CSV file")
+  }
+
+  val json = Exporter.exportToJson(mowers, lawn)
+
+  Exporter.writeToFile(
+    json,
     conf.getString("application.output-json-file")
-  )
+  ) match {
+    case Success(_) => println("JSON file written")
+    case Failure(_) => println("Error: could not write JSON file")
+  }
 
-  Exporter.exportToYaml(
-    mowers,
-    lawn,
+  val yaml = Exporter.exportToYaml(mowers, lawn)
+
+  Exporter.writeToFile(
+    yaml,
     conf.getString("application.output-yaml-file")
-  )
+  ) match {
+    case Success(_) => println("YAML file written")
+    case Failure(_) => println("Error: could not write YAML file")
+  }
 }
