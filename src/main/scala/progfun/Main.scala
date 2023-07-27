@@ -25,9 +25,17 @@ object Main extends App {
     }
     .toList
 
-  mowers.foreach {
-    case Some(mower) =>
-      println(mower.finalPosition.x.toString + " " + mower.finalPosition.y.toString + " " + mower.finalPosition.orientation.toString)
-    case None => println("Erreur de parsing")
-  }
+  Exporter.exportToCsv(mowers, conf.getString("application.output-csv-file"))
+
+  Exporter.exportToJson(
+    mowers,
+    lawn,
+    conf.getString("application.output-json-file")
+  )
+
+  Exporter.exportToYaml(
+    mowers,
+    lawn,
+    conf.getString("application.output-yaml-file")
+  )
 }
