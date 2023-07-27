@@ -9,14 +9,25 @@ object Main extends App {
 
   val lawn = Parser.parseLawn(lines.headOption.getOrElse("0 0"))
 
-  lines.drop(1).grouped(2).foreach {
-    case List(position, instructions) =>
-      val finalPosition = LawnMower.processInstructions(
-        Parser.parsePosition(position),
-        instructions,
-        lawn
-      )
-      println("Position finale: " + finalPosition.toString)
-    case _ => println("Erreur de parsing")
+  val mowers = lines
+    .drop(1)
+    .grouped(2)
+    .map {
+      case List(position, instructions) =>
+        val finalPosition = LawnMower.processInstructions(
+          Parser.parsePosition(position),
+          instructions,
+          lawn
+        )
+        Some(Mower(Parser.parsePosition(position), instructions, finalPosition))
+      case _ =>
+        None
+    }
+    .toList
+
+  mowers.foreach {
+    case Some(mower) =>
+      println(mower.finalPosition.x.toString + " " + mower.finalPosition.y.toString + " " + mower.finalPosition.orientation.toString)
+    case None => println("Erreur de parsing")
   }
 }
