@@ -1,4 +1,4 @@
-package progfun
+package fr.esgi.al.funprog
 
 import play.api.libs.json.{JsNumber, JsValue, Json}
 import scala.util.Try

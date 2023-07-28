@@ -1,4 +1,4 @@
-package progfun
+package fr.esgi.al.funprog
 
 object LawnMower {
 

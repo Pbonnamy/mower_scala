@@ -1,5 +1,6 @@
 package progfun
 
+import fr.esgi.al.funprog.{Exporter, Lawn, Mower, Orientation, Position}
 import org.scalatest.flatspec.AnyFlatSpec
 
 class ExporterSpec extends AnyFlatSpec {

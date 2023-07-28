@@ -1,5 +1,5 @@
-package progfun
+package fr.esgi.al.funprog
 
-import progfun.Orientation.Orientation
+import Orientation.Orientation
 
 case class Position(x: Int, y: Int, orientation: Orientation)

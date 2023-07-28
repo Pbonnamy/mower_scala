@@ -1,9 +1,8 @@
 package progfun
 
+import fr.esgi.al.funprog.{Lawn, LawnMower, Orientation, Position}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import progfun.{LawnMower, Orientation, Position}
-import progfun.Lawn
 
 class LawnMowerSpec extends AnyFlatSpec with Matchers {
 

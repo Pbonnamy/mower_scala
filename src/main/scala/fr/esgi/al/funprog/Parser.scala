@@ -1,4 +1,6 @@
-package progfun
+package fr.esgi.al.funprog
+
+import fr.esgi.al.funprog
 
 import scala.util.Try
 
@@ -21,7 +23,10 @@ object Parser {
             .map(_.toString)
             .contains(orientation)
         )
-          Some(Position(x.toInt, y.toInt, Orientation.withName(orientation)))
+          Some(
+            funprog
+              .Position(x.toInt, y.toInt, Orientation.withName(orientation))
+          )
         else None
       case _ => None
     }

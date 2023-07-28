@@ -1,4 +1,4 @@
-package progfun
+package fr.esgi.al.funprog
 
 case class Mower(
     initialPosition: Position,

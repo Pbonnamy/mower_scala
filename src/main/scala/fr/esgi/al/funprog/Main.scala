@@ -1,4 +1,4 @@
-package progfun
+package fr.esgi.al.funprog
 
 import com.typesafe.config.{Config, ConfigFactory}
 import scala.util.{Failure, Success}

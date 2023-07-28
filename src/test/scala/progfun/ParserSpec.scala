@@ -1,7 +1,7 @@
 package progfun
 
+import fr.esgi.al.funprog.{Lawn, Orientation, Parser, Position}
 import org.scalatest.flatspec.AnyFlatSpec
-import progfun.{Lawn, Orientation, Parser, Position}
 
 class ParserSpec extends AnyFlatSpec {
 
