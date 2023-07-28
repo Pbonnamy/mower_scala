@@ -1,11 +1,12 @@
 package progfun
 
 import fr.esgi.al.funprog.{Exporter, Lawn, Mower, Orientation, Position}
-import org.scalatest.flatspec.AnyFlatSpec
 
-class ExporterSpec extends AnyFlatSpec {
+import org.scalatest.funsuite.AnyFunSuite
 
-  it should "export a new CSV" in {
+class ExporterSpec extends AnyFunSuite {
+
+  test("export a new CSV") {
     val mowers = List(
       Some(
         Mower(
@@ -28,7 +29,7 @@ class ExporterSpec extends AnyFlatSpec {
     assert(current == expected)
   }
 
-  it should "export a new JSON" in {
+  test("export a new JSON") {
     val mowers = List(
       Some(
         Mower(
@@ -52,7 +53,7 @@ class ExporterSpec extends AnyFlatSpec {
     assert(current == expected.replace("\n", System.lineSeparator))
   }
 
-  it should "export a new YAML" in {
+  test("export a new YAML") {
     val mowers = List(
       Some(
         Mower(
@@ -75,13 +76,13 @@ class ExporterSpec extends AnyFlatSpec {
     assert(current.replace("\n", "") == expected.replace("\n", ""))
   }
 
-  it should "write a file" in {
+  test("write a file") {
     val lines =
       Exporter.writeToFile("Hello world !", "src/test/resources/test.txt")
     assert(lines.isSuccess)
   }
 
-  it should "not write a file" in {
+  test("not write a file") {
     val lines = Exporter.writeToFile("Hello world !", "unkown/test.txt")
     assert(!lines.isSuccess)
   }
