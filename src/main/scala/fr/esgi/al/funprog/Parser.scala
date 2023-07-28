@@ -1,6 +1,7 @@
 package fr.esgi.al.funprog
 
 import fr.esgi.al.funprog
+import better.files._
 
 import scala.util.Try
 
@@ -34,10 +35,7 @@ object Parser {
 
   def readFile(filename: String): Try[List[String]] = {
     Try {
-      val source = scala.io.Source.fromFile(filename)
-      val lines = source.getLines().toList
-      source.close()
-      lines
+      File(filename).lines.toList
     }
   }
 }
