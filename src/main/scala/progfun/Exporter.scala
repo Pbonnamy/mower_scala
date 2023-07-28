@@ -32,7 +32,6 @@ object Exporter {
         "x" -> JsNumber(lawn.width),
         "y" -> JsNumber(lawn.height)
       ),
-      // dont write mowers if they are empty
       "tondeuses" -> mowers.zipWithIndex
         .filter(_._1.isDefined)
         .map {
