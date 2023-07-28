@@ -2,6 +2,7 @@ package fr.esgi.al.funprog
 
 import play.api.libs.json.{JsNumber, JsValue, Json}
 import scala.util.Try
+import better.files._
 
 object Exporter {
 
@@ -90,9 +91,8 @@ object Exporter {
 
   def writeToFile(content: String, filename: String): Try[Unit] = {
     Try {
-      val writer = new java.io.PrintWriter(filename)
-      writer.write(content)
-      writer.close()
+      File(filename).createIfNotExists().overwrite(content)
+      ()
     }
   }
 }
