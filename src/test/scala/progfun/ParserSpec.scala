@@ -20,7 +20,6 @@ class ParserSpec extends AnyFlatSpec {
     assert(!parsedLawn.contains(expectedLines))
   }
 
-
   it should "parse a position" in {
     val expectedPosition = Position(4, 5, Orientation.N)
     val parsedPosition = Parser.parsePosition("4 5 N")
